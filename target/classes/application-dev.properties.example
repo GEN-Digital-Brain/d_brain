@@ -1,0 +1,14 @@
+server.port= ----> Your_port
+PROJECT_NAME= ----> Name_of_your_project
+
+APP_LOCALE=pt_BR
+TIMEZONE=America/Sao_Paulo
+
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_DATABASE= ----> BD_Name
+
+DATABASE_URL=jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC
+
+DATABASE_USERNAME= ----> Your_MySQL_name
+DATABASE_PASSWORD= ----> Your_MySQL_password
