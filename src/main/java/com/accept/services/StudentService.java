@@ -23,78 +23,82 @@ import jakarta.persistence.EntityNotFoundException;
 @Tag(name = "Student Service", description = "Service layer for managing student")
 public class StudentService {
 
-	@Autowired
-	private final StudentRepository studentRepository;
-	private final ModelMapper modelMapper;
+    @Autowired
+    private final StudentRepository studentRepository;
+    private final ModelMapper modelMapper;
 
-	public StudentService(StudentRepository studentRepository, ModelMapper modelMapper) {
-		this.studentRepository = studentRepository;
-		this.modelMapper = modelMapper;
-	}
+    public StudentService(StudentRepository studentRepository, ModelMapper modelMapper) {
+        this.studentRepository = studentRepository;
+        this.modelMapper = modelMapper;
+    }
 
-	@Transactional(readOnly = true)
-	public List<StudentDTO> getAllStudents() {
-		List<Student> students = studentRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<StudentDTO> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
 
-		if (students.isEmpty()) {
-			throw new EntityNotFoundException("No students found.");
-		}
-		return students.stream().map(student -> modelMapper.map(student, StudentDTO.class))
-				.collect(Collectors.toList());
-	}
+        if (students.isEmpty()) {
+            throw new EntityNotFoundException("No students found.");
+        }
+        return students.stream().map(student -> modelMapper.map(student, StudentDTO.class))
+                .collect(Collectors.toList());
+    }
 
-	@Transactional(readOnly = true)
-	public StudentDTO getStudentById(UUID studentId) {
-		Student student = studentRepository.findById(studentId)
-				.orElseThrow(() -> new IllegalArgumentException("Student not found"));
-		return modelMapper.map(student, StudentDTO.class);
-	}
+    @Transactional(readOnly = true)
+    public StudentDTO getStudentById(UUID studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        return modelMapper.map(student, StudentDTO.class);
+    }
 
-	@Transactional
-	public StudentDTO createStudent(StudentDTO studentDTO) {
-		validateStudent(studentDTO);
-		Student student = modelMapper.map(studentDTO, Student.class);
-		student.onCreate();
-		Student savedStudent = studentRepository.save(student);
-		return modelMapper.map(savedStudent, StudentDTO.class);
-	}
+    @Transactional
+    public StudentDTO createStudent(StudentDTO studentDTO) {
+        validateRules(studentDTO);
+        Student student = modelMapper.map(studentDTO, Student.class);
+        student.onCreate();
+        Student savedStudent = studentRepository.save(student);
+        return modelMapper.map(savedStudent, StudentDTO.class);
+    }
 
-	@Transactional
-	public StudentDTO updateStudent(UUID studentId, StudentDTO studentDTO) {
-		Student student = studentRepository.findById(studentId)
-				.orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentId));
-		validateStudent(studentDTO);	
-		student.setFullName(studentDTO.getFullName());
-		student.setAge(studentDTO.getAge());
-		student.setFirstSemesterGrade(studentDTO.getFirstSemesterGrade());
-		student.setSecondSemesterGrade(studentDTO.getSecondSemesterGrade());
-		student.onUpdate();
-		Student savedStudent = studentRepository.save(student);
-		return modelMapper.map(savedStudent, StudentDTO.class);
-	}
+    @Transactional
+    public StudentDTO updateStudent(UUID studentId, StudentDTO studentDTO) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentId));
+        validateRules(studentDTO);
+        student.setFullName(studentDTO.getFullName());
+        student.setAge(studentDTO.getAge());
+        student.setFirstSemesterGrade(studentDTO.getFirstSemesterGrade());
+        student.setSecondSemesterGrade(studentDTO.getSecondSemesterGrade());
+        student.onUpdate();
+        Student savedStudent = studentRepository.save(student);
+        return modelMapper.map(savedStudent, StudentDTO.class);
+    }
 
-	@Transactional
-	public void deleteStudent(UUID studentId) {
-		Optional<Student> studentOptional = studentRepository.findById(studentId);
-		if (studentOptional.isPresent()) {
-			studentRepository.delete(studentOptional.get());
-		} else {
-			throw new EntityNotFoundException("Student not found with id: " + studentId);
-		}
-	}
+    @Transactional
+    public void deleteStudent(UUID studentId) {
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        if (studentOptional.isPresent()) {
+            studentRepository.delete(studentOptional.get());
+        } else {
+            throw new EntityNotFoundException("Student not found with id: " + studentId);
+        }
+    }
 
-	private void validateStudent(StudentDTO studentDTO) {
-		Optional<Student> existingStudentByEmail = studentRepository.findByEmail(studentDTO.getEmail());
-		if (existingStudentByEmail.isPresent()) {
-			throw new IllegalArgumentException("Student with the same email already exists.");
-		}
-	
-		// Verifica se o aluno já está vinculado a algum curso
-		/*if (studentDTO.TurmaId() != null) {
-			Optional<Student> studentInCourse = studentRepository.findByCourseId(studentDTO.getTurmaId());
-			if (studentInCourse.isPresent()) {
-				throw new IllegalArgumentException("Each student can only participate in one course.");
-			}
-		}*/
-	}
+    private void validateRules(StudentDTO studentDTO) {
+        Optional<Student> existingStudentByEmail = studentRepository.findByEmail(studentDTO.getEmail());
+        if (existingStudentByEmail.isPresent()) {
+            throw new IllegalArgumentException("Student with the same email already exists.");
+        }
+        if (!isValidEmail(studentDTO.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format. Please provide a valid email address.");
+        }
+        if (studentDTO.getEmail().length() > 50) {
+            throw new IllegalArgumentException("The limit of characters allowed to e-mails here is 50.");
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[\\w.-]+@[\\w-]+\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$";
+        return email.matches(emailRegex);
+    }
+
 }
