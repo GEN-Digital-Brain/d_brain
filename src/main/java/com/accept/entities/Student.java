@@ -40,8 +40,10 @@ public @Data class Student {
     @Size(min = 3, message = "Minimum 3 characters")
     private String fullName;
 
-    @Email(message = "E-mail needs to be valid")
     @NotBlank(message = "E-mail is required")
+    @NotNull(message = "Email cannot be null.")
+    @Email(message = "Invalid email format.")
+    @Size(max = 50, message = "Email cannot exceed 50 characters.")
     private String email;
 
     @NotNull(message = "Age is required")
