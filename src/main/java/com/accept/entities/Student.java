@@ -13,14 +13,16 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
-@Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "fullName") })
+@Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
 @EqualsAndHashCode(of = "studentId")
 @ToString
 @Schema(description = "Entity representing a student")
@@ -35,7 +37,12 @@ public @Data class Student {
     @NotBlank(message = "Full name is required")
     @Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
     @Schema(description = "Full name of the student", example = "Levi Livinston")
+    @Size(min = 3, message = "Minimum 3 characters")
     private String fullName;
+
+    @Email(message = "E-mail needs to be valid")
+    @NotBlank(message = "E-mail is required")
+    private String email;
 
     @NotNull(message = "Age is required")
     @Column(name = "age", nullable = false)
