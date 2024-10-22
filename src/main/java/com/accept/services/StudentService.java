@@ -63,6 +63,7 @@ public class StudentService {
 	public StudentDTO updateStudent(UUID studentId, StudentDTO studentDTO) {
 		Student student = studentRepository.findById(studentId)
 				.orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentId));
+		validateStudent(studentDTO);	
 		student.setFullName(studentDTO.getFullName());
 		student.setAge(studentDTO.getAge());
 		student.setTeacherName(studentDTO.getTeacherName());
@@ -85,10 +86,17 @@ public class StudentService {
 	}
 
 	private void validateStudent(StudentDTO studentDTO) {
-		Optional<Student> existingStudent = studentRepository.findByFullName(studentDTO.getFullName());
-		if (existingStudent.isPresent()) {
-			throw new IllegalArgumentException("Student with the same name already exists");
+		Optional<Student> existingStudentByEmail = studentRepository.findByEmail(studentDTO.getEmail());
+		if (existingStudentByEmail.isPresent()) {
+			throw new IllegalArgumentException("Student with the same email already exists.");
 		}
+	
+		// Verifica se o aluno já está vinculado a algum curso
+		/*if (studentDTO.TurmaId() != null) {
+			Optional<Student> studentInCourse = studentRepository.findByCourseId(studentDTO.getTurmaId());
+			if (studentInCourse.isPresent()) {
+				throw new IllegalArgumentException("Each student can only participate in one course.");
+			}
+		}*/
 	}
-
 }
