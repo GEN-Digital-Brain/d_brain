@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+
 @Schema(description = "Data Transfer Object for a Student")
 @Tag(name = "Student DTO", description = "Data Transfer Object for a Student")
 public @Data class StudentDTO {
@@ -19,17 +20,14 @@ public @Data class StudentDTO {
     @Schema(description = "Full name of the student", example = "Levi Livinston")
     private String fullName;
 
+    @NotBlank(message = "Full name is required")
+    @Schema(description = "Full name of the student", example = "Levi Livinston")
+    private String email;
+
+
     @NotNull(message = "Age is required")
     @Schema(description = "Age of the student", example = "20")
     private Integer age;
-
-    @NotBlank(message = "Teacher's name is required")
-    @Schema(description = "Teacher's name of the student", example = "Gustavo Boaz")
-    private String teacherName;
-
-    @NotBlank(message = "Room number is required")
-    @Schema(description = "Room number of the student", example = "A101")
-    private String roomNumber;
 
     @NotNull(message = "First semester grade is required")
     @Schema(description = "First semester grade of the student", example = "8.5")

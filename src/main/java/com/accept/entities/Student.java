@@ -49,16 +49,6 @@ public @Data class Student {
     @Schema(description = "Age of the student", example = "20")
     private Integer age;
 
-    @NotBlank(message = "Teacher's name is required")
-    @Column(name = "teacher_name", columnDefinition = "VARCHAR(255) NOT NULL")
-    @Schema(description = "Teacher's name of the student", example = "Gustavo Boaz")
-    private String teacherName;
-
-    @NotBlank(message = "Room number is required")
-    @Column(name = "room_number", columnDefinition = "VARCHAR(10) NOT NULL")
-    @Schema(description = "Room number of the student", example = "A101")
-    private String roomNumber;
-
     @NotNull(message = "First semester grade is required")
     @Column(name = "first_semester_grade", nullable = false)
     @Schema(description = "First semester grade of the student", example = "8.5")
