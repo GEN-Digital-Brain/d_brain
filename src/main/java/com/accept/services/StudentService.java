@@ -66,8 +66,6 @@ public class StudentService {
 		validateStudent(studentDTO);	
 		student.setFullName(studentDTO.getFullName());
 		student.setAge(studentDTO.getAge());
-		student.setTeacherName(studentDTO.getTeacherName());
-		student.setRoomNumber(studentDTO.getRoomNumber());
 		student.setFirstSemesterGrade(studentDTO.getFirstSemesterGrade());
 		student.setSecondSemesterGrade(studentDTO.getSecondSemesterGrade());
 		student.onUpdate();
