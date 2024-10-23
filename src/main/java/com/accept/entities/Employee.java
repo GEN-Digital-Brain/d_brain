@@ -25,13 +25,13 @@ public class Employee {
     private UUID employeeId;
 
     @NotBlank(message = "Name is required")
-    @Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(name = "employee_name", columnDefinition = "VARCHAR(255) NOT NULL")
     @Schema(description = "Full name of the employee", example = "John Doe")
     private String employeeName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
-    @Column(name = "email", columnDefinition = "VARCHAR(255) NOT NULL")
+    @Column(name = "employee_email", columnDefinition = "VARCHAR(255) NOT NULL")
     @Schema(description = "Email of the employee", example = "john.doe@example.com")
     private String employeeEmail;
 
