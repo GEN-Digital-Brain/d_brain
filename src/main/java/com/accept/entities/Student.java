@@ -41,7 +41,7 @@ public @Data class Student {
 	private String name;
 
 	@NotBlank(message = "E-mail is required")
-	@Email(message = "Email should be valid.")
+	@Email(message = "E-mail should be valid.")
 	@Size(max = 50, message = "Email cannot exceed 50 characters.")
 	private String email;
 

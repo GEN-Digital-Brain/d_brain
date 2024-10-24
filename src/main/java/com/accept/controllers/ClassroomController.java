@@ -41,57 +41,57 @@ public class ClassroomController {
 	}
 
 	@GetMapping
-	@Operation(summary = "Get all Classroom", description = "Retrieve a list of all classesroom")
+	@Operation(summary = "Get all Classes", description = "Retrieve a list of all classes")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassroomDTO.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<List<ClassroomDTO>> getAll() {
-		List<ClassroomDTO> classes = classroomService.getAllClasses();
+		List<ClassroomDTO> classes = classroomService.getAll();
 		return ResponseEntity.ok(classes);
 	}
 
 	@GetMapping("{id}")
-	@Operation(summary = "Get Classroom by ID", description = "Retrieve a specific classroom by its ID")
+	@Operation(summary = "Get Class by ID", description = "Retrieve a specific class by its ID")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassroomDTO.class))),
-			@ApiResponse(responseCode = "404", description = "Classroom not found"),
+			@ApiResponse(responseCode = "404", description = "Class not found"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<ClassroomDTO> getById(@PathVariable UUID id) {
-		ClassroomDTO classroomDTO = classroomService.getClassroomById(id);
+		ClassroomDTO classroomDTO = classroomService.getById(id);
 		return ResponseEntity.ok(classroomDTO);
 	}
 
 	@PostMapping
-	@Operation(summary = "Create a Classroom", description = "Creates a new class with the provided details")
+	@Operation(summary = "Create a Class", description = "Creates a new class with the provided details")
 	@ApiResponses({
 			@ApiResponse(responseCode = "201", description = "Class created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassroomDTO.class))),
 			@ApiResponse(responseCode = "400", description = "Bad request"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<ClassroomDTO> create(@Valid @RequestBody ClassroomDTO classroomDTO) {
-		ClassroomDTO createdClassroom = classroomService.createClassroom(classroomDTO);
+		ClassroomDTO createdClassroom = classroomService.create(classroomDTO);
 		return new ResponseEntity<>(createdClassroom, HttpStatus.CREATED);
 	}
 
 	@PutMapping("{id}")
-	@Operation(summary = "Update a Classroom", description = "Update the details of an existing classroom")
+	@Operation(summary = "Update a Class", description = "Update the details of an existing class")
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Classroom updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassroomDTO.class))),
-			@ApiResponse(responseCode = "404", description = "Classroom not found"),
+			@ApiResponse(responseCode = "200", description = "Class updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassroomDTO.class))),
+			@ApiResponse(responseCode = "404", description = "Class not found"),
 			@ApiResponse(responseCode = "400", description = "Bad request"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<ClassroomDTO> update(@PathVariable UUID id, @Valid @RequestBody ClassroomDTO classroomDTO) {
-		ClassroomDTO updatedClassroom = classroomService.updateClassroom(id, classroomDTO);
+		ClassroomDTO updatedClassroom = classroomService.update(id, classroomDTO);
 		return ResponseEntity.ok(updatedClassroom);
 	}
 
 	@DeleteMapping("{id}")
-	@Operation(summary = "Delete a Classroom", description = "Deletes a specific class by its ID")
-	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Classroom deleted successfully"),
-			@ApiResponse(responseCode = "404", description = "Classroom not found"),
+	@Operation(summary = "Delete a Class", description = "Deletes a specific class by its ID")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Class deleted successfully"),
+			@ApiResponse(responseCode = "404", description = "Class not found"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<String> delete(@PathVariable UUID id) {
-		String message = "Classroom with ID " + id + " deleted successfully.";
-		classroomService.deleteClassroom(id);
+		String message = "Class with ID " + id + " deleted successfully.";
+		classroomService.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(message);
 	}
 

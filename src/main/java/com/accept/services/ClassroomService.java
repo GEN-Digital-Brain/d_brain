@@ -1,7 +1,6 @@
 package com.accept.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -11,95 +10,77 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.accept.dto.ClassDTO;
-import com.accept.entities.Class;
+import com.accept.dto.ClassroomDTO;
+import com.accept.entities.Classroom;
 import com.accept.entities.Student;
-import com.accept.repositories.ClassRepository;
+import com.accept.repositories.ClassroomRepository;
 import com.accept.repositories.StudentRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 @Service
 @Validated
-@Tag(name = "Class Service", description = "Service layer for managing classes")
+@Tag(name = "Classes Service", description = "Service layer for managing classes")
 public class ClassroomService {
 
 	@Autowired
 	private final StudentRepository studentRepository;
-	private final ClassRepository classRepository;
+	private final ClassroomRepository classroomRepository;
 	private final ModelMapper modelMapper;
 
-	public ClassroomService(StudentRepository studentRepository, ClassRepository classRepository, ModelMapper modelMapper) {
+	public ClassroomService(StudentRepository studentRepository, ClassroomRepository classroomRepository,
+			ModelMapper modelMapper) {
 		this.studentRepository = studentRepository;
-		this.classRepository = classRepository;
+		this.classroomRepository = classroomRepository;
 		this.modelMapper = modelMapper;
 	}
 
 	@Transactional(readOnly = true)
-	public List<ClassDTO> getAllClasses() {
-		List<Class> classes = classRepository.findAll();
+	public List<ClassroomDTO> getAll() {
+		List<Classroom> classes = classroomRepository.findAll();
 
 		if (classes.isEmpty()) {
 			throw new EntityNotFoundException("No classes found.");
 		}
-		return classes.stream().map(classEntity -> modelMapper.map(classEntity, ClassDTO.class))
+		return classes.stream().map(classroom -> modelMapper.map(classroom, ClassroomDTO.class))
 				.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public ClassDTO getClassById(UUID classId) {
-		Class classEntity = classRepository.findById(classId)
-				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + classId));
-		return modelMapper.map(classEntity, ClassDTO.class);
+	public ClassroomDTO getById(UUID id) {
+		Classroom classroom = classroomRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
+		return modelMapper.map(classroom, ClassroomDTO.class);
 	}
 
 	@Transactional
-	public ClassDTO createClass(ClassDTO classDTO) {
-		validateRules(classDTO);
-		Class classEntity = modelMapper.map(classDTO, Class.class);
-		classEntity.onCreate();
-		Class savedClass = classRepository.save(classEntity);
-		return modelMapper.map(savedClass, ClassDTO.class);
+	public ClassroomDTO create(@Valid ClassroomDTO classroomDTO) {
+		Classroom classroom = modelMapper.map(classroomDTO, Classroom.class);
+		classroom.onCreate();
+		return modelMapper.map(classroomRepository.save(classroom), ClassroomDTO.class);
 	}
 
 	@Transactional
-	public ClassDTO updateClass(UUID classId, ClassDTO classDTO) {
-		Class classEntity = classRepository.findById(classId)
-				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + classId));
-		validateRules(classDTO);
-		Student student = studentRepository.findById(classDTO.getStudent()).orElseThrow(
-				() -> new IllegalArgumentException("Student not found with id: " + classDTO.getStudent()));
+	public ClassroomDTO update(UUID id, @Valid ClassroomDTO classroomDTO) {
+		Classroom classroom = classroomRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
 
-		classEntity.setClassName(classDTO.getName());
-		classEntity.setInstructor(classDTO.getInstructor());
-		classEntity.setStudent(student);
-		classEntity.onUpdate();
+//		Student student = studentRepository.findById(classroomDTO.getId())
+//				.orElseThrow(() -> new IllegalArgumentException("Student not found with id: " + classroomDTO.getId()));
 
-		Class savedClass = classRepository.save(classEntity);
-		return modelMapper.map(savedClass, ClassDTO.class);
+		modelMapper.map(classroomDTO, classroom);
+//		classroom.setStudent(student);
+		classroom.onUpdate();
+		return modelMapper.map(classroomRepository.save(classroom), ClassroomDTO.class);
 	}
 
 	@Transactional
-	public void deleteClass(UUID classId) {
-		Optional<Class> classOptional = classRepository.findById(classId);
-
-		if (classOptional.isPresent()) {
-			classRepository.delete(classOptional.get());
-		} else {
-			throw new EntityNotFoundException("Class not found with id: " + classId);
-		}
-	}
-
-	private void validateRules(ClassDTO classDTO) {
-		Optional<Class> existingClassByClassName = classRepository.findByClassName(classDTO.getName());
-
-		if (existingClassByClassName.isPresent()) {
-			throw new IllegalArgumentException("Class with the same name already exists.");
-		}
-		if (classDTO.getName().length() < 3) {
-			throw new IllegalArgumentException("Class name must be at least 3 characters long.");
-		}
+	public void delete(UUID id) {
+		classroomRepository.findById(id).ifPresentOrElse(classroomRepository::delete, () -> {
+			throw new EntityNotFoundException("Class not found with id: " + id);
+		});
 	}
 
 }

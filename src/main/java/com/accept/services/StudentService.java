@@ -53,7 +53,6 @@ public class StudentService {
 
 	@Transactional
 	public StudentDTO createStudent(@Valid StudentDTO studentDTO) {
-		validateStudent(studentDTO);
 		validateRules(studentDTO);
 		Student student = modelMapper.map(studentDTO, Student.class);
 		student.onCreate();
@@ -62,13 +61,13 @@ public class StudentService {
 
 	@Transactional
 	public StudentDTO updateStudent(UUID id, @Valid StudentDTO studentDTO) {
-		Student existingStudent = studentRepository.findById(id)
+		Student student = studentRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Student not found: " + id));
-		validateStudent(studentDTO);
 		validateRules(studentDTO);
-		modelMapper.map(studentDTO, existingStudent);
-		existingStudent.onUpdate();
-		return modelMapper.map(studentRepository.save(existingStudent), StudentDTO.class);
+
+		modelMapper.map(studentDTO, student);
+		student.onUpdate();
+		return modelMapper.map(studentRepository.save(student), StudentDTO.class);
 	}
 
 	@Transactional
@@ -76,13 +75,6 @@ public class StudentService {
 		studentRepository.findById(id).ifPresentOrElse(studentRepository::delete, () -> {
 			throw new EntityNotFoundException("Student not found with id: " + id);
 		});
-	}
-
-	private void validateStudent(StudentDTO studentDTO) {
-		Optional<Student> existingStudent = studentRepository.findByName(studentDTO.getName());
-		if (existingStudent.isPresent()) {
-			throw new IllegalArgumentException("Student with the same name already exists");
-		}
 	}
 
 	private void validateRules(StudentDTO studentDTO) {

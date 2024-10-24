@@ -1,6 +1,5 @@
 package com.accept.repositories;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +9,5 @@ import com.accept.entities.Classroom;
 
 @Repository
 public interface ClassroomRepository extends JpaRepository<Classroom, UUID> {
-
-	Optional<Classroom> findByName(String name);
 
 }
