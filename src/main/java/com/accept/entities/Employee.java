@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "employees", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
+@Table(name = "employees", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 @EqualsAndHashCode(of = "employeeId")
 @ToString
 @Schema(description = "Entity representing an employee")
@@ -63,5 +63,4 @@ public class Employee {
     public void onUpdate() {
         updatedAt = Instant.now();
     }
-
 }
