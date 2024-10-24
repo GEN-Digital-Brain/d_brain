@@ -22,3 +22,5 @@ rad.json
 TestResults.xml
 #application-dev.properties
 application-dev.properties
+#target
+target/

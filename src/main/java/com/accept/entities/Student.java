@@ -13,14 +13,16 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
-@Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "fullName") })
+@Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
 @EqualsAndHashCode(of = "studentId")
 @ToString
 @Schema(description = "Entity representing a student")
@@ -35,22 +37,19 @@ public @Data class Student {
     @NotBlank(message = "Full name is required")
     @Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
     @Schema(description = "Full name of the student", example = "Levi Livinston")
+    @Size(min = 3, message = "Minimum 3 characters")
     private String fullName;
+
+    @NotBlank(message = "E-mail is required")
+    @NotNull(message = "Email cannot be null.")
+    @Email(message = "Invalid email format.")
+    @Size(max = 50, message = "Email cannot exceed 50 characters.")
+    private String email;
 
     @NotNull(message = "Age is required")
     @Column(name = "age", nullable = false)
     @Schema(description = "Age of the student", example = "20")
     private Integer age;
-
-    @NotBlank(message = "Teacher's name is required")
-    @Column(name = "teacher_name", columnDefinition = "VARCHAR(255) NOT NULL")
-    @Schema(description = "Teacher's name of the student", example = "Gustavo Boaz")
-    private String teacherName;
-
-    @NotBlank(message = "Room number is required")
-    @Column(name = "room_number", columnDefinition = "VARCHAR(10) NOT NULL")
-    @Schema(description = "Room number of the student", example = "A101")
-    private String roomNumber;
 
     @NotNull(message = "First semester grade is required")
     @Column(name = "first_semester_grade", nullable = false)
