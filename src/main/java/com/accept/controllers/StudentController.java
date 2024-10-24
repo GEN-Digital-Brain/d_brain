@@ -20,10 +20,10 @@ import com.accept.dto.StudentDTO;
 import com.accept.services.StudentService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -57,8 +57,8 @@ public class StudentController {
 			@ApiResponse(responseCode = "404", description = "Student not found"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<StudentDTO> getById(@PathVariable UUID id) {
-		StudentDTO student = studentService.getStudentById(id);
-		return ResponseEntity.ok(student);
+		StudentDTO studentDTO = studentService.getStudentById(id);
+		return ResponseEntity.ok(studentDTO);
 	}
 
 	@PostMapping
