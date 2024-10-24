@@ -1,6 +1,7 @@
 package com.accept.controllers;
 
 import com.accept.dto.EmployeeDTO;
+import com.accept.entities.Employee;
 import com.accept.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Validated
@@ -53,30 +55,58 @@ public class EmployeeController {
         return ResponseEntity.ok(employee);
     }
 
-    @PostMapping
-    @Operation(summary = "Create an Employee", description = "Creates a new employee with the provided details")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Employee created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<EmployeeDTO> create(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        EmployeeDTO createdEmployee = employeeService.createEmployee(employeeDTO);
-        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
+    @PostMapping("/login")
+    public ResponseEntity<EmployeeDTO> autenticarUsuario(@RequestBody Optional<EmployeeDTO> employeeDTO){
+
+        return employeeService.authenticateEmployee(employeeDTO)
+                .map(resposta -> ResponseEntity.status(HttpStatus.OK).body(resposta))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
-    @PutMapping("{id}")
-    @Operation(summary = "Update an Employee", description = "Update the details of an existing employee")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Employee updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Employee not found"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<EmployeeDTO> update(@PathVariable UUID id, @Valid @RequestBody EmployeeDTO employeeDTO) {
-        EmployeeDTO updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
-        return ResponseEntity.ok(updatedEmployee);
+
+    @PostMapping("/create")
+    public ResponseEntity<Employee> postUsuario(@RequestBody @Valid Employee employee) {
+
+        return employeeService.registerEmployee(employee)
+                .map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(resposta))
+                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Employee> putUsuario(@Valid @RequestBody Employee employee) {
+
+        return employeeService.updateEmployee(employee)
+                .map(resposta -> ResponseEntity.status(HttpStatus.OK).body(resposta))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
+    }
+
+//
+//    @PostMapping
+//    @Operation(summary = "Create an Employee", description = "Creates a new employee with the provided details")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "201", description = "Employee created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeDTO.class))),
+//            @ApiResponse(responseCode = "400", description = "Bad request"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")
+//    })
+//    public ResponseEntity<EmployeeDTO> create(@Valid @RequestBody EmployeeDTO employeeDTO) {
+//        EmployeeDTO createdEmployee = employeeService.createEmployee(employeeDTO);
+//        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
+//    }
+//
+//    @PutMapping("{id}")
+//    @Operation(summary = "Update an Employee", description = "Update the details of an existing employee")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "Employee updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeDTO.class))),
+//            @ApiResponse(responseCode = "404", description = "Employee not found"),
+//            @ApiResponse(responseCode = "400", description = "Bad request"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")
+//    })
+//    public ResponseEntity<EmployeeDTO> update(@PathVariable UUID id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+//        EmployeeDTO updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+//        return ResponseEntity.ok(updatedEmployee);
+//    }
 
     @DeleteMapping("{id}")
     @Operation(summary = "Delete an Employee", description = "Deletes a specific employee by their ID")

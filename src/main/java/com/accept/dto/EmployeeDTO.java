@@ -33,4 +33,6 @@ public class EmployeeDTO {
     @Schema(description = "Position of the employee", example = "Software Engineer")
     private String position;
 
+    private String token;
+
 }
