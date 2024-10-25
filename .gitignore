@@ -1,26 +1,182 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
-.vscode/
-#Cache folder
-.alcache/
-#Symbols folder
-.alpackages/
-#Snapshots folder
-.snapshots/
-#Testing Output folder
-.output/
-#Extension App-file
-*.app
-#Rapid Application Development File
-rad.json
-#Translation Base-file
-*.g.xlf
-#License-file
-*.flf
-#Test results file
-TestResults.xml
-#application-dev.properties
-application-dev.properties
-#target
+# Build Tools
+## Maven
 target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+!.mvn/wrapper/maven-wrapper.jar
+!gradle-wrapper.jar
+
+## Gradle
+.gradle/
+build/
+out/
+
+# IDEs and Editors
+## IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+.idea/**/idea.log
+.idea/misc.xml
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/webResources.xml
+.idea/jsLibraryMappings.xml
+.idea/languageInjection.xml
+.idea/workspace.xml
+.idea/sonarlint/
+.idea/mybatis.xml
+
+## Visual Studio Code
+.vscode/
+.history/
+.code-workspace
+
+## NetBeans
+.nb-gradle/
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+*.nbm
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+## Eclipse IDE
+.metadata/
+bin/
+tmp/
+.localhistory/
+.settings/
+.classpath
+.project
+mvn-eclipse.xml
+.cproject
+.loadpath
+.target/
+.apt_generated/
+.factorypath
+
+## Spring Tool Suite (STS)
+.springBeans
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.sts4-cache/
+.mvn/
+tmp/
+
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+.yarn/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# System Files
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.AppleDB
+.AppleDesktop
+.apdisk
+Network Trash Folder
+Temporary Items
+
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## Linux
+*~
+.directory
+.Trash-*
+
+# Temporary and Backup Files
+*.tmp
+tmp/
+*.bak
+*.swp
+*.swm
+*.swx
+*.backup
+*.old
+*.orig
+*.log
+
+# Configuration Files
+.env
+.env.*
+
+# Docker
+docker-compose.override.yml
+.env.docker
+
+# JRebel
+rebel.xml
+
+# BlueJ
+*.ctxt
+
+# Packages
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar
+*.gz
+*.rar
+
+# Virtual Machine
+hs_err_pid*
+replay_pid*
+
+# Vite
+.cache/
+.vite/
+
+# Added missing entries from the first list
+## Node.js (additional)
+*.local
+
+## Editors (additional)
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Specific Files to Ignore
+application-dev.properties
