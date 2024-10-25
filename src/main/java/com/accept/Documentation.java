@@ -33,7 +33,7 @@ public class Documentation {
 						.version("v1.0")
 				.license(new License()
 						.name("Apache License 2.0")
-						.url("https://github.com/Fiigueiredo/accept-me/tree/main?tab=Apache-2.0-1-ov-file"))
+						.url("https://github.com/GEN-Digital-Brain/d_brain?tab=Apache-2.0-1-ov-file"))
 				.contact(new Contact()
 						.name(projectName)
 						.url("https://meaceita.vercel.app/")));
