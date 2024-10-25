@@ -100,7 +100,7 @@ public class EmployeeController {
 
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete an Employee", description = "Deletes a specific employee by their ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Employee deleted successfully"),

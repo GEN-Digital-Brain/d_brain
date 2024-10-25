@@ -1,7 +1,6 @@
 package com.accept.dto;
 
 import java.util.UUID;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +10,8 @@ import lombok.Data;
 
 @Schema(description = "Data Transfer Object for a Student")
 @Tag(name = "Students DTO", description = "Data Transfer Object for a Student")
-public @Data class StudentDTO {
+@Data
+public class StudentDTO {
 
 	@Schema(description = "Unique identifier of the student", example = "d1f0c5f1-e9e8-473d-96df-1f5a5c98f35f")
 	private UUID id;
@@ -37,5 +37,4 @@ public @Data class StudentDTO {
 	@NotNull(message = "Second semester grade is required")
 	@Schema(description = "Second semester grade of the student", example = "9.0")
 	private Double secondSemesterGrade;
-
 }

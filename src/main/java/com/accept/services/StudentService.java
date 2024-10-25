@@ -66,7 +66,6 @@ public class StudentService {
 		validateRules(studentDTO);
 
 		modelMapper.map(studentDTO, student);
-		student.onUpdate();
 		return modelMapper.map(studentRepository.save(student), StudentDTO.class);
 	}
 
