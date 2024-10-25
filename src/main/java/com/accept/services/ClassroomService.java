@@ -51,9 +51,8 @@ public class ClassroomService {
 	@Transactional(readOnly = true)
 	public ClassroomDTO getById(UUID id) {
 		Classroom classroom = classroomRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
+				.orElseThrow(() -> new RuntimeException("Class not found: " + id));
 		return modelMapper.map(classroom, ClassroomDTO.class);
-
 	}
 
 	@Transactional
@@ -61,7 +60,7 @@ public class ClassroomService {
 		Classroom classroom = modelMapper.map(classroomDTO, Classroom.class);
 
 		Student student = studentRepository.findById(classroomDTO.getStudentId())
-				.orElseThrow(() -> new RuntimeException("Student not found"));
+				.orElseThrow(() -> new RuntimeException("Student not found with id: " + classroomDTO.getStudentId()));
 
 		classroom.setStudent(student);
 		classroom.onCreate();
@@ -71,10 +70,10 @@ public class ClassroomService {
 	@Transactional
 	public ClassroomDTO update(UUID id, @Valid ClassroomDTO classroomDTO) {
 		Classroom classroom = classroomRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
+				.orElseThrow(() -> new RuntimeException("Class not found with id: " + id));
 
-		Student student = studentRepository.findById(classroomDTO.getId())
-				.orElseThrow(() -> new IllegalArgumentException("Student not found with id: " + classroomDTO.getId()));
+		Student student = studentRepository.findById(classroomDTO.getStudentId())
+				.orElseThrow(() -> new RuntimeException("Student not found with id: " + classroomDTO.getStudentId()));
 
 		modelMapper.map(classroomDTO, classroom);
 		classroom.setStudent(student);
