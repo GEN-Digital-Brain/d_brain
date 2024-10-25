@@ -1,17 +1,17 @@
 package com.accept.dto;
 
+import java.util.List;
 import java.util.UUID;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Schema(description = "Data Transfer Object for a Classroom")
 @Tag(name = "Classes DTO", description = "Data Transfer Object for a Classroom")
-public @Data class ClassroomDTO {
+@Data
+public class ClassroomDTO {
 
 	@Schema(description = "Unique identifier of the classroom", example = "b2f8d5e7-4546-4a39-bad4-4e8b78537b9b")
 	private UUID id;
@@ -25,8 +25,6 @@ public @Data class ClassroomDTO {
 	@Schema(description = "Instructor of the classroom", example = "John Doe")
 	private String instructor;
 
-	@NotNull(message = "Student is required")
-	@Schema(description = "Student associated with the classroom")
-	private UUID studentId;
-
+	@Schema(description = "List of student IDs associated with the classroom")
+	private List<UUID> studentIds;
 }

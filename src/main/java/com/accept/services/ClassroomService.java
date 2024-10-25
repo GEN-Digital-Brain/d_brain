@@ -31,7 +31,7 @@ public class ClassroomService {
 	private final ModelMapper modelMapper;
 
 	public ClassroomService(StudentRepository studentRepository, ClassroomRepository classroomRepository,
-			ModelMapper modelMapper) {
+							ModelMapper modelMapper) {
 		this.studentRepository = studentRepository;
 		this.classroomRepository = classroomRepository;
 		this.modelMapper = modelMapper;
@@ -44,36 +44,37 @@ public class ClassroomService {
 		if (classes.isEmpty()) {
 			throw new EntityNotFoundException("No classes found.");
 		}
-		return classes.stream().map(classroom -> modelMapper.map(classroom, ClassroomDTO.class))
+		return classes.stream()
+				.map(this::convertToDTO)  // Usa o método auxiliar para incluir studentIds
 				.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
 	public ClassroomDTO getById(UUID id) {
 		Classroom classroom = classroomRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
-		return modelMapper.map(classroom, ClassroomDTO.class);
+				.orElseThrow(() -> new EntityNotFoundException("Class not found: " + id));
+		return convertToDTO(classroom);  // Usa o método auxiliar
 	}
 
 	@Transactional
 	public ClassroomDTO create(@Valid ClassroomDTO classroomDTO) {
 		Classroom classroom = modelMapper.map(classroomDTO, Classroom.class);
+		classroom.setStudents(getStudentsFromIds(classroomDTO.getStudentIds()));  // Associação de estudantes
 		classroom.onCreate();
-		return modelMapper.map(classroomRepository.save(classroom), ClassroomDTO.class);
+		return convertToDTO(classroomRepository.save(classroom));  // Usa o método auxiliar
 	}
 
 	@Transactional
 	public ClassroomDTO update(UUID id, @Valid ClassroomDTO classroomDTO) {
 		Classroom classroom = classroomRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
+				.orElseThrow(() -> new EntityNotFoundException("Class not found: " + id));
 
-//		Student student = studentRepository.findById(classroomDTO.getId())
-//				.orElseThrow(() -> new IllegalArgumentException("Student not found with id: " + classroomDTO.getId()));
-
+		// Atualiza os dados da turma
 		modelMapper.map(classroomDTO, classroom);
-//		classroom.setStudent(student);
+		classroom.setStudents(getStudentsFromIds(classroomDTO.getStudentIds()));  // Associação de estudantes
 		classroom.onUpdate();
-		return modelMapper.map(classroomRepository.save(classroom), ClassroomDTO.class);
+
+		return convertToDTO(classroomRepository.save(classroom));  // Usa o método auxiliar
 	}
 
 	@Transactional
@@ -83,4 +84,20 @@ public class ClassroomService {
 		});
 	}
 
+	// Método auxiliar para buscar e validar estudantes pelos seus IDs
+	private List<Student> getStudentsFromIds(List<UUID> studentIds) {
+		return studentIds.stream()
+				.map(id -> studentRepository.findById(id)
+						.orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id)))
+				.collect(Collectors.toList());
+	}
+
+	// Método auxiliar para converter Classroom para ClassroomDTO, incluindo studentIds
+	private ClassroomDTO convertToDTO(Classroom classroom) {
+		ClassroomDTO dto = modelMapper.map(classroom, ClassroomDTO.class);
+		dto.setStudentIds(classroom.getStudents().stream()
+				.map(Student::getId)
+				.collect(Collectors.toList()));
+		return dto;
+	}
 }

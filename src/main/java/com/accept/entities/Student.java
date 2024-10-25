@@ -4,15 +4,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,10 +15,11 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
+@Data
 @EqualsAndHashCode(of = "id")
 @ToString
 @Schema(description = "Entity representing a student")
-public @Data class Student {
+public class Student {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,30 +28,37 @@ public @Data class Student {
 	private UUID id;
 
 	@NotBlank(message = "Name is required")
-	@Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
-	@Schema(description = "Full name of the student", example = "Levi Livinston")
 	@Size(min = 3, message = "Minimum 3 characters")
+	@Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
+	@Schema(description = "Full name of the student", example = "Levi Livingston")
 	private String name;
 
 	@NotBlank(message = "E-mail is required")
 	@Email(message = "E-mail should be valid.")
 	@Size(max = 50, message = "Email cannot exceed 50 characters.")
+	@Column(name = "email", unique = true, columnDefinition = "VARCHAR(50) NOT NULL")
 	private String email;
 
 	@NotNull(message = "Age is required")
-	@Column(name = "age", nullable = false)
 	@Schema(description = "Age of the student", example = "20")
+	@Column(name = "age", nullable = false)
 	private Integer age;
 
 	@NotNull(message = "First semester grade is required")
+	@Schema(description = "First semester grade", example = "8.5")
 	@Column(name = "first_semester_grade", nullable = false)
-	@Schema(description = "First semester grade of the student", example = "8.5")
 	private Double firstSemesterGrade;
 
 	@NotNull(message = "Second semester grade is required")
+	@Schema(description = "Second semester grade", example = "9.0")
 	@Column(name = "second_semester_grade", nullable = false)
-	@Schema(description = "Second semester grade of the student", example = "9.0")
 	private Double secondSemesterGrade;
+
+	// Relacionamento ManyToOne com Classroom
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "classroom_id", nullable = false)
+	@Schema(description = "Classroom to which the student belongs")
+	private Classroom classroom;
 
 	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
 	@Schema(description = "Timestamp when the student record was created", example = "2024-10-01T12:00:00Z")
@@ -78,5 +78,4 @@ public @Data class Student {
 	public void onUpdate() {
 		updatedAt = Instant.now();
 	}
-
 }
