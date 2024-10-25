@@ -32,7 +32,7 @@ Certifique-se de ter o seguinte instalado:
 1. **Clone o repositório**:
    ```bash
    git clone https://github.com/GEN-Digital-Brain/d_brain
-   cd d-brain
+   cd d_brain
 
 ## Documentação da API
 
