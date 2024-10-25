@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.accept.dto.ClassroomDTO;
 import com.accept.entities.Classroom;
+import com.accept.entities.Student;
 import com.accept.repositories.ClassroomRepository;
 import com.accept.repositories.StudentRepository;
 
@@ -52,11 +53,17 @@ public class ClassroomService {
 		Classroom classroom = classroomRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
 		return modelMapper.map(classroom, ClassroomDTO.class);
+
 	}
 
 	@Transactional
 	public ClassroomDTO create(@Valid ClassroomDTO classroomDTO) {
 		Classroom classroom = modelMapper.map(classroomDTO, Classroom.class);
+
+		Student student = studentRepository.findById(classroomDTO.getStudentId())
+				.orElseThrow(() -> new RuntimeException("Student not found"));
+
+		classroom.setStudent(student);
 		classroom.onCreate();
 		return modelMapper.map(classroomRepository.save(classroom), ClassroomDTO.class);
 	}
@@ -66,11 +73,11 @@ public class ClassroomService {
 		Classroom classroom = classroomRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Class not found: " + id));
 
-//		Student student = studentRepository.findById(classroomDTO.getId())
-//				.orElseThrow(() -> new IllegalArgumentException("Student not found with id: " + classroomDTO.getId()));
+		Student student = studentRepository.findById(classroomDTO.getId())
+				.orElseThrow(() -> new IllegalArgumentException("Student not found with id: " + classroomDTO.getId()));
 
 		modelMapper.map(classroomDTO, classroom);
-//		classroom.setStudent(student);
+		classroom.setStudent(student);
 		classroom.onUpdate();
 		return modelMapper.map(classroomRepository.save(classroom), ClassroomDTO.class);
 	}

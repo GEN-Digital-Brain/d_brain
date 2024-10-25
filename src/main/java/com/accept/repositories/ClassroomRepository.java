@@ -10,4 +10,6 @@ import com.accept.entities.Classroom;
 @Repository
 public interface ClassroomRepository extends JpaRepository<Classroom, UUID> {
 
+//	Optional<Classroom> findByName(String name);
+
 }

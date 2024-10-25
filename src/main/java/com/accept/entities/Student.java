@@ -14,8 +14,10 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,16 +50,19 @@ public @Data class Student {
 	@NotNull(message = "Age is required")
 	@Column(name = "age", nullable = false)
 	@Schema(description = "Age of the student", example = "20")
+	@Positive(message = "Age must be positive")
 	private Integer age;
 
 	@NotNull(message = "First semester grade is required")
 	@Column(name = "first_semester_grade", nullable = false)
 	@Schema(description = "First semester grade of the student", example = "8.5")
+	@Max(value = 10, message = "Grade must be 10 or lower")
 	private Double firstSemesterGrade;
 
 	@NotNull(message = "Second semester grade is required")
 	@Column(name = "second_semester_grade", nullable = false)
 	@Schema(description = "Second semester grade of the student", example = "9.0")
+	@Max(value = 10, message = "Grade must be 10 or lower")
 	private Double secondSemesterGrade;
 
 	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
