@@ -17,12 +17,12 @@ public @Data class StudentDTO {
 	private UUID id;
 
 	@NotBlank(message = "Full name is required")
-	@Schema(description = "Full name of the student", example = "Levi Livinston")
+	@Schema(description = "Full name of the student", example = "John Doe")
 	@Size(min = 3, message = "Minimum 3 characters")
 	private String name;
 
 	@NotBlank(message = "Email is required")
-	@Schema(description = "E-mail of the student", example = "levi@gmail.com")
+	@Schema(description = "E-mail of the student", example = "john.doe@example.com")
 	@Size(max = 50, message = "Email cannot exceed 50 characters.")
 	private String email;
 

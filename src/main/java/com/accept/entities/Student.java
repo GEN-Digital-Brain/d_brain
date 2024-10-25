@@ -38,7 +38,7 @@ public @Data class Student {
 
 	@NotBlank(message = "Name is required")
 	@Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
-	@Schema(description = "Full name of the student", example = "Levi Livinston")
+	@Schema(description = "Full name of the student", example = "John Doe")
 	@Size(min = 3, message = "Minimum 3 characters")
 	private String name;
 
