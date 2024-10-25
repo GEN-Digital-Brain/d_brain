@@ -46,7 +46,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StudentDTO.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<List<StudentDTO>> getAll() {
-		List<StudentDTO> students = studentService.getAllStudents();
+		List<StudentDTO> students = studentService.getAll();
 		return ResponseEntity.ok(students);
 	}
 
@@ -57,7 +57,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "404", description = "Student not found"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<StudentDTO> getById(@PathVariable UUID id) {
-		StudentDTO studentDTO = studentService.getStudentById(id);
+		StudentDTO studentDTO = studentService.getById(id);
 		return ResponseEntity.ok(studentDTO);
 	}
 
@@ -68,7 +68,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "400", description = "Bad request"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<StudentDTO> create(@Valid @RequestBody StudentDTO studentDTO) {
-		StudentDTO createdStudent = studentService.createStudent(studentDTO);
+		StudentDTO createdStudent = studentService.create(studentDTO);
 		return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
 	}
 
@@ -80,7 +80,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "400", description = "Bad request"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<StudentDTO> update(@PathVariable UUID id, @Valid @RequestBody StudentDTO studentDTO) {
-		StudentDTO updatedStudent = studentService.updateStudent(id, studentDTO);
+		StudentDTO updatedStudent = studentService.update(id, studentDTO);
 		return ResponseEntity.ok(updatedStudent);
 	}
 
@@ -91,7 +91,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	public ResponseEntity<String> delete(@PathVariable UUID id) {
 		String message = "Student with ID " + id + " deleted successfully.";
-		studentService.deleteStudent(id);
+		studentService.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(message);
 	}
 

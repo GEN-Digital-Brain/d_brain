@@ -27,6 +27,6 @@ public @Data class ClassroomDTO {
 
 	@NotNull(message = "Student is required")
 	@Schema(description = "Student associated with the classroom")
-	private UUID studentId;
+	private UUID student;
 
 }

@@ -34,7 +34,7 @@ public class StudentService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<StudentDTO> getAllStudents() {
+	public List<StudentDTO> getAll() {
 		List<Student> students = studentRepository.findAll();
 
 		if (students.isEmpty()) {
@@ -45,14 +45,14 @@ public class StudentService {
 	}
 
 	@Transactional(readOnly = true)
-	public StudentDTO getStudentById(UUID id) {
+	public StudentDTO getById(UUID id) {
 		Student student = studentRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Student not found"));
 		return modelMapper.map(student, StudentDTO.class);
 	}
 
 	@Transactional
-	public StudentDTO createStudent(@Valid StudentDTO studentDTO) {
+	public StudentDTO create(@Valid StudentDTO studentDTO) {
 		validateRules(studentDTO);
 		Student student = modelMapper.map(studentDTO, Student.class);
 		student.onCreate();
@@ -60,7 +60,7 @@ public class StudentService {
 	}
 
 	@Transactional
-	public StudentDTO updateStudent(UUID id, @Valid StudentDTO studentDTO) {
+	public StudentDTO update(UUID id, @Valid StudentDTO studentDTO) {
 		Student student = studentRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Student not found: " + id));
 		validateRules(studentDTO);
@@ -71,7 +71,7 @@ public class StudentService {
 	}
 
 	@Transactional
-	public void deleteStudent(UUID id) {
+	public void delete(UUID id) {
 		studentRepository.findById(id).ifPresentOrElse(studentRepository::delete, () -> {
 			throw new EntityNotFoundException("Student not found with id: " + id);
 		});

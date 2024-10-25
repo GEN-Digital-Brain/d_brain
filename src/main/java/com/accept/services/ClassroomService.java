@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.accept.dto.ClassroomDTO;
 import com.accept.entities.Classroom;
-import com.accept.entities.Student;
 import com.accept.repositories.ClassroomRepository;
 import com.accept.repositories.StudentRepository;
 
