@@ -47,13 +47,14 @@ public class StudentService {
 	@Transactional(readOnly = true)
 	public StudentDTO getStudentById(UUID id) {
 		Student student = studentRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Student not found"));
+				.orElseThrow(() -> new EntityNotFoundException("Student not found: " + id));
 		return modelMapper.map(student, StudentDTO.class);
 	}
 
 	@Transactional
 	public StudentDTO createStudent(@Valid StudentDTO studentDTO) {
-		validateRules(studentDTO);
+		// Validações para criação do estudante
+		validateRulesForCreation(studentDTO);
 		Student student = modelMapper.map(studentDTO, Student.class);
 		student.onCreate();
 		return modelMapper.map(studentRepository.save(student), StudentDTO.class);
@@ -61,12 +62,14 @@ public class StudentService {
 
 	@Transactional
 	public StudentDTO updateStudent(UUID id, @Valid StudentDTO studentDTO) {
-		Student student = studentRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Student not found: " + id));
-		validateRules(studentDTO);
+		Student existingStudent = studentRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Student not found: " + id));
 
-		modelMapper.map(studentDTO, student);
-		return modelMapper.map(studentRepository.save(student), StudentDTO.class);
+		validateRulesForUpdate(existingStudent, studentDTO);
+
+
+		modelMapper.map(studentDTO, existingStudent);
+		return modelMapper.map(studentRepository.save(existingStudent), StudentDTO.class);
 	}
 
 	@Transactional
@@ -76,11 +79,25 @@ public class StudentService {
 		});
 	}
 
-	private void validateRules(StudentDTO studentDTO) {
+
+	private void validateRulesForCreation(StudentDTO studentDTO) {
 		Optional<Student> existingStudentByEmail = studentRepository.findByEmail(studentDTO.getEmail());
 		if (existingStudentByEmail.isPresent()) {
 			throw new IllegalArgumentException("Student with the same email already exists.");
 		}
+		validateCommonRules(studentDTO);
+	}
+
+
+	private void validateRulesForUpdate(Student existingStudent, StudentDTO studentDTO) {
+		Optional<Student> existingStudentByEmail = studentRepository.findByEmail(studentDTO.getEmail());
+		if (existingStudentByEmail.isPresent() && !existingStudentByEmail.get().getId().equals(existingStudent.getId())) {
+			throw new IllegalArgumentException("Student with the same email already exists.");
+		}
+		validateCommonRules(studentDTO);
+	}
+
+	private void validateCommonRules(StudentDTO studentDTO) {
 		if (!isValidEmail(studentDTO.getEmail())) {
 			throw new IllegalArgumentException("Invalid email format. Please provide a valid email address.");
 		}

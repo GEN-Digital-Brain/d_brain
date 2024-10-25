@@ -10,40 +10,42 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "classes")
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)  // Explicitamente inclui os campos necessários
-@ToString(onlyExplicitlyIncluded = true)  // Inclui apenas os campos relevantes no toString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 @Schema(description = "Entity representing a classroom")
 public class Classroom {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", columnDefinition = "BINARY(16)")
-	@EqualsAndHashCode.Include  // Incluído para comparação de igualdade
-	@ToString.Include  // Incluído na saída de toString
+	@EqualsAndHashCode.Include
+	@ToString.Include
 	@Schema(description = "Unique identifier of the class", example = "b2f8d5e7-4546-4a39-bad4-4e8b78537b9b")
 	private UUID id;
 
 	@NotBlank(message = "Classroom name is required")
 	@Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
-	@ToString.Include  // Incluído na saída de toString
+	@ToString.Include
 	@Schema(description = "Name of the class", example = "Math 101")
 	@Size(min = 3, message = "Minimum 3 characters")
 	private String name;
 
 	@NotBlank(message = "Instructor is required")
 	@Column(name = "instructor", columnDefinition = "VARCHAR(255) NOT NULL")
-	@ToString.Include  // Incluído na saída de toString
+	@ToString.Include
 	@Schema(description = "Name of the class instructor", example = "John Doe")
 	private String instructor;
 
-	@OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@ToString.Exclude  // Excluído para evitar recursão e sobrecarga de saída
-	@EqualsAndHashCode.Exclude  // Excluído da comparação de igualdade
+	@Setter
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	@Schema(description = "Students enrolled in the class")
 	private List<Student> students;
 
@@ -65,4 +67,5 @@ public class Classroom {
 	public void onUpdate() {
 		updatedAt = Instant.now();
 	}
+
 }

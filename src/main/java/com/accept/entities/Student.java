@@ -15,10 +15,11 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
+@Data
 @EqualsAndHashCode(of = "id")
 @ToString
 @Schema(description = "Entity representing a student")
-public @Data class Student {
+public class Student {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,29 +28,30 @@ public @Data class Student {
 	private UUID id;
 
 	@NotBlank(message = "Name is required")
-	@Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
-	@Schema(description = "Full name of the student", example = "Levi Livinston")
 	@Size(min = 3, message = "Minimum 3 characters")
+	@Column(name = "name", columnDefinition = "VARCHAR(255) NOT NULL")
+	@Schema(description = "Full name of the student", example = "Levi Livingston")
 	private String name;
 
 	@NotBlank(message = "E-mail is required")
 	@Email(message = "E-mail should be valid.")
 	@Size(max = 50, message = "Email cannot exceed 50 characters.")
+	@Column(name = "email", unique = true, columnDefinition = "VARCHAR(50) NOT NULL")
 	private String email;
 
 	@NotNull(message = "Age is required")
-	@Column(name = "age", nullable = false)
 	@Schema(description = "Age of the student", example = "20")
+	@Column(name = "age", nullable = false)
 	private Integer age;
 
 	@NotNull(message = "First semester grade is required")
+	@Schema(description = "First semester grade", example = "8.5")
 	@Column(name = "first_semester_grade", nullable = false)
-	@Schema(description = "First semester grade of the student", example = "8.5")
 	private Double firstSemesterGrade;
 
 	@NotNull(message = "Second semester grade is required")
+	@Schema(description = "Second semester grade", example = "9.0")
 	@Column(name = "second_semester_grade", nullable = false)
-	@Schema(description = "Second semester grade of the student", example = "9.0")
 	private Double secondSemesterGrade;
 
 	// Relacionamento ManyToOne com Classroom
@@ -76,5 +78,4 @@ public @Data class Student {
 	public void onUpdate() {
 		updatedAt = Instant.now();
 	}
-
 }

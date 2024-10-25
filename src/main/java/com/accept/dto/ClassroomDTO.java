@@ -5,7 +5,6 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -26,7 +25,6 @@ public class ClassroomDTO {
 	@Schema(description = "Instructor of the classroom", example = "John Doe")
 	private String instructor;
 
-	@NotNull(message = "Students are required")
 	@Schema(description = "List of student IDs associated with the classroom")
 	private List<UUID> studentIds;
 }

@@ -37,4 +37,7 @@ public class StudentDTO {
 	@NotNull(message = "Second semester grade is required")
 	@Schema(description = "Second semester grade of the student", example = "9.0")
 	private Double secondSemesterGrade;
+
+	@Schema(description = "ID of the classroom the student belongs to", example = "b2f8d5e7-4546-4a39-bad4-4e8b78537b9b")
+	private UUID classroomId;  // Adicionado para vincular à turma
 }
